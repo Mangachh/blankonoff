@@ -1,6 +1,6 @@
 
 ## Installation
-
+ TODO: make an installer to put files on the folder. Rigth now the paths are hardcoded
 
 
 
