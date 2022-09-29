@@ -46,7 +46,7 @@ and click on **setup.py** again.
 
 The icons used are from: 
 	- [Icon on](https://www.reshot.com/free-svg-icons/item/moon-RA2V5ZSDFE/)
-	-[Icon off](https://www.reshot.com/free-svg-icons/item/moon-crescent-SD4ENBAV8K/)
+	- [Icon off](https://www.reshot.com/free-svg-icons/item/moon-crescent-SD4ENBAV8K/)
 	
 
 With the [license](https://www.reshot.com/license/)
