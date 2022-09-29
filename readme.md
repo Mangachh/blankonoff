@@ -10,27 +10,29 @@ Screen Saver doesn't start.
 Click on the panel launcher to set on/off the screen blinking.
 
 
-All the operations are done by the *finalSaver.py* script (to be renamed). 
-First the script checks if the blanking is on or off with a subprocess and
+All the operations are done by the *finalSaver.py* script. 
+When clicking the pluging, first checks if the blanking is on or off with a subprocess call and
 **xset q** as a command. Then, if the blanking is on, it turns it off or viceversa
 using **xset s on/off** via subprocesses.
 
-Then it changes the icon of the launcher if exists. The launcher is put on hand and
-an installer is on it's way.
+When modified the blanking state it modifies the icon to reflect the state of the blanking:
+	- black moon: no-blanking, the screen saver won't turn on
+	- yellow moon: blanking, the screen saver will turn on if activated
+
+The script doesn't care if the screen saver is enabled or not. 
 
 
 ## Installation
-Put the scripts and icons in the desired folder. Then change de route of the icons in the **finalSaver.py** 
-script. Then create the panel launcher and change it's name to **screen.desktop**. 
 
-
-TODO: make an installer to put files on the right folder and create the launcher.
+Run the script **setup.py**. In case that there is more than one panel, choose the panel to put the plugin icon.
+To remove the plugin, remove it like any other plugin, right click on the icon and click remove.
+The **setup.py** will copy all the data to **HOME/.local/share/blankonoff** so, for reinstalling, go there
+and click on **setup.py** again.
 
 
 ## Known issues:
 
-**Worth checking**: it seems that the changes doesn't last when the session is over. So, if by default the blinking is **on**, 
-then in every new run the blinking is going to be **on** regardless the app.
+ - **Worth checking**: 
 
 
 ## Liscense:

@@ -1,9 +1,15 @@
-from curses import panel
-from curses.ascii import isdigit
+"""Setup module of the BlankOnOff app
+Author: Mangachh
+Version: 1.0
+
+"""
+
+
+
 import subprocess
 import os
 import shutil
-import time
+
 
 from importlib_metadata import Deprecated
 
@@ -28,13 +34,31 @@ CONST_LINES= ["[Desktop Entry]",
 
 
 def get_installation_paths() -> tuple[str, str]:
+    """
+    Gets the paths where the file is and the destination as 
+    HOME+PATH
+
+    Returns:
+        tuple[str, str]: path where the file is and destination
+    """
     source = os.path.dirname(os.path.abspath(__file__))
     destination = f"{HOME}{PATH}"
     
     return (source, destination)
     
     
-def create_installation_directory(source: str, destination: str) -> bool:   
+def create_installation_directory(source: str, destination: str) -> bool: 
+    """
+    Creates the directory for the installation. OJU! This is not for the 
+    launcher, only for the data
+
+    Args:
+        source (str): where the file is
+        destination (str): where to put the data
+
+    Returns:
+        bool: is the directory created?
+    """
     # cambiar eso para file     
     print(f"Desired Path: {destination}")
     print(f"Current Path: {source}")
@@ -66,6 +90,17 @@ def create_installation_directory(source: str, destination: str) -> bool:
 
 
 def move_files(source: str, destination: str) -> bool:
+    """Moves files from the source to the destination
+    plus: it works for every file
+
+    Args:
+        source (str): where the files are
+        destination (str): destination
+
+    Returns:
+        bool: moved succefully?
+    """
+    
     print("Copying files...")
     
     for file in os.listdir(source):
@@ -89,8 +124,9 @@ def move_files(source: str, destination: str) -> bool:
     
     return True
 
-CMD_ADD_LAUNCHER = "xfce4-panel --add=launcher"
 
+# Queries to add the panel
+CMD_ADD_LAUNCHER = "xfce4-panel --add=launcher"
 CMD_GET_PANELS = "xfconf-query -c xfce4-panel -p /panels"
 CMD_GET_IDS = "xfconf-query -c xfce4-panel -p /panels/panel-%s/plugin-ids"
 CMD_GET_TYPE = "xfconf-query -c xfce4-panel -p /plugins/plugin-%s"
@@ -98,6 +134,11 @@ CMD_GET_ITEMS = "xfconf-query -c xfce4-panel -p /plugins/plugin-%s/items "
 
 
 def register_to_panel() -> str:
+    """Registers the plugin to xfce4-panel
+
+    Returns:
+        str: id of the plugin
+    """
     
     print("Adding launcher to panel")
     resp = subprocess.run(CMD_ADD_LAUNCHER, shell=True)   
@@ -134,7 +175,18 @@ def register_to_panel() -> str:
     return ""
 
 def set_launcher(id: str, source: str, destination: str, filename:str) -> bool:
-    # create the desktop file   
+    """Creates a launcher and copies it to the plugin folder in order
+    to have the launcher in the panel
+
+    Args:
+        id (str): id of the plugin
+        source (str): where the file is
+        destination (str): where the files is going
+        filename (str): desktop filename
+
+    Returns:
+        bool: _description_
+    """
     os.makedirs(destination)
     
     with open(f"{source}/{filename}", "w") as f:
@@ -151,13 +203,18 @@ def set_launcher(id: str, source: str, destination: str, filename:str) -> bool:
     #subprocess.run(f"cp {source}/{filename} {destination}/{filename}", shell=True)
     shutil.copy(f"{source}/{filename}", f"{destination}/{filename}")
     subprocess.check_output(f"xfconf-query -c xfce4-panel -p /plugins/plugin-{id}/items -t string -s {filename} -a --create", shell=True)
-    subprocess.run("xfce4-panel -r", shell=True)
-    subprocess.run("xfce4-panel", shell=True)
-    return
+    
+    # refreshes the panel
+    #subprocess.run("xfce4-panel -r", shell=True)
+    #subprocess.run("xfce4-panel", shell=True)
+    
+    return True
     
     
     
 def main():
+    """Main loop
+    """
     (source, destination) = get_installation_paths()
     created = create_installation_directory(source, destination)  
       
