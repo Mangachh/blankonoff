@@ -17,14 +17,16 @@ class PathInfo:
     It's easy an neat to have all in the same class, this way we can
     reuse everything
     """
-    
-    PARENT_FOLDER = "/home/cobos/.config/xfce4/panel/"
+    HOME = os.path.expanduser('~')
+    PARENT_FOLDER = HOME + "/.config/xfce4/panel/"
     DEF_FOLDER_NAME = "launcher"
-    FILE_NAME = "screen.desktop"
+    FILE_NAME = "blankonoff.desktop"
     
     # TODO: create fallbacks icons
-    ICON_ON = "/home/cobos/code/python/Saver_plugin/on.svg"
-    ICON_OFF = "/home/cobos/code/python/Saver_plugin/off.svg"
+    
+    ICON_ON = HOME + "/code/python/Saver_plugin/on.svg"
+    ICON_OFF = HOME + "/code/python/Saver_plugin//off.svg"
+    
     
 
 
@@ -182,6 +184,8 @@ class IconChanger:
                     
                                 
                 f.write(line)
+            f.close()
+            
                 
     @staticmethod
     def search_path(parent_path: str, def_name: str, file_name: str) -> str:

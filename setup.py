@@ -3,6 +3,9 @@ from curses.ascii import isdigit
 import subprocess
 import os
 import shutil
+import time
+
+from importlib_metadata import Deprecated
 
 # check the route of this files
 # if files are NOT in the folder, move them
@@ -11,7 +14,17 @@ import shutil
 
 PATH = "/.local/share/blankonoff/"
 HOME = os.path.expanduser("~")
-APP_NAME = "screen.desktop"
+APP_NAME = "blankonoff.desktop"
+SCRIPT_NAME = "finalSaver.py"
+ICON_NAME = "off.svg"
+# desktop file
+CONST_LINES= ["[Desktop Entry]", 
+              "Version=1.0", 
+              "Type=Application", 
+              "Name=BlankOnOff", 
+              "Comment=Enables/Disables the screen blanking", 
+              "Terminal=false"]
+
 
 
 def get_installation_paths() -> tuple[str, str]:
@@ -56,8 +69,8 @@ def move_files(source: str, destination: str) -> bool:
     print("Copying files...")
     
     for file in os.listdir(source):
-        full_sr = source + file
-        full_dest = destination + file
+        full_sr = f"{source}/{file}"
+        full_dest = f"{destination}/{file}"
         
         if os.path.isfile(full_sr):
             try:
@@ -120,16 +133,28 @@ def register_to_panel() -> str:
                 
     return ""
 
-def set_launcher(id: str, source: str, destination:str, filename:str) -> bool:
+def set_launcher(id: str, source: str, destination: str, filename:str) -> bool:
+    # create the desktop file   
+    os.makedirs(destination)
     
-    try:
-        os.makedirs(destination)
-        shutil.copy(f"{source}/{filename}", f"{destination}/{filename}")
-    except Exception as e:
-        print(e)
-        return False
-
-    return True
+    with open(f"{source}/{filename}", "w") as f:
+        try:
+            f.writelines(line + "\n" for line in CONST_LINES)
+            f.write(f"Exec={source}{SCRIPT_NAME}\n")
+            f.write(f"Icon={source}{ICON_NAME}\n")
+            f.close()
+        except Exception as e:
+            print(e)
+            return False
+    
+    # register to panel
+    #subprocess.run(f"cp {source}/{filename} {destination}/{filename}", shell=True)
+    shutil.copy(f"{source}/{filename}", f"{destination}/{filename}")
+    subprocess.check_output(f"xfconf-query -c xfce4-panel -p /plugins/plugin-{id}/items -t string -s {filename} -a --create", shell=True)
+    subprocess.run("xfce4-panel -r", shell=True)
+    subprocess.run("xfce4-panel", shell=True)
+    return
+    
     
     
 def main():
@@ -138,15 +163,20 @@ def main():
       
     if created:
         if move_files(source, destination) == False:
-            return          
-            
-        panel_id = register_to_panel()
+            return               
+       
+        id = register_to_panel()
         
-        if panel_id == "":
+        if id == "":
             return
+         
+        source = f"{HOME}{PATH}" 
+        destination = f"{HOME}/.config/xfce4/panel/launcher-{id}"
+        set_launcher(id, source, destination, APP_NAME)
         
-        destination = HOME + "/.config/xfce4/panel/launcher-%s" % panel_id  
-        set_launcher(panel_id, source, destination, APP_NAME)
+        #arrancamos a ver
+        #subprocess.run(f"{destination}/{APP_NAME}")
+		
          
     
 if __name__ == "__main__":
