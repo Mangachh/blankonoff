@@ -2,7 +2,10 @@
 """ 
 A simple script to enable/disable blanking mode & expose on xfce4 desktops, 
 changes the icon on the panel launcher.
-The script prevents the screensave to start.scre
+The script prevents the screensave to start.
+
+Author: Mangachh
+Version: 1.0
 """
 
 
@@ -115,6 +118,7 @@ class Saver:
         
         
         return (xset_res, blank_res, expose_res)
+    
  
    
 # TODO: installation of the launcher and che
@@ -210,6 +214,8 @@ class IconChanger:
         """
         
         print("Searching path...")
+        
+        # ugly
         for fn in os.listdir(parent_path):           
             if def_name in fn:                
                 dir_file = os.path.join(parent_path,fn)                

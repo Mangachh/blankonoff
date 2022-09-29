@@ -1,7 +1,8 @@
-"""Setup module of the BlankOnOff app
+"""
+Setup module of the BlankOnOff app
+
 Author: Mangachh
 Version: 1.0
-
 """
 
 

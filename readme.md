@@ -32,7 +32,10 @@ and click on **setup.py** again.
 
 ## Known issues:
 
- - **Worth checking**: 
+ - The "xset s XX" doesn't save the state between sesions. So every new sesion the xset returns to it's original state but the plugin doesn't reflect it. 
+ -- Posible solutions:
+ --- autorun on log-in
+ --- try to save the changes between sessions
 
 
 ## Liscense:
@@ -41,5 +44,9 @@ and click on **setup.py** again.
 
 ## Icons Links
 
+The icons used are from: 
+
 	- icon on: https://www.reshot.com/free-svg-icons/item/moon-RA2V5ZSDFE/
 	- icon off: https://www.reshot.com/free-svg-icons/item/moon-crescent-SD4ENBAV8K/
+
+With the (https://www.reshot.com/license/)[liscense]
