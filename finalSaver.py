@@ -19,7 +19,7 @@ class PathInfo:
     reuse everything
     """
     
-    XFCE_PATH = "/home/cobos/.config/xfce4/panel/"
+    PARENT_FOLDER = "/home/cobos/.config/xfce4/panel/"
     DEF_FOLDER_NAME = "launcher"
     FILE_NAME = "screen.desktop"
     
@@ -124,6 +124,23 @@ class IconChanger:
     
     __ICON_TXT = "Icon"
     
+    def change_icon_w_info(state: bool, data: PathInfo) -> None:
+        """Changes the icon using the class PathInfo to get all the data needed
+
+        Args:
+            state (bool): state of the app
+            data (PathInfo): info of the paths
+        """
+        
+        IconChanger.change_icon(state, 
+                                PathInfo.PARENT_FOLDER, 
+                                PathInfo.DEF_FOLDER_NAME, 
+                                PathInfo.FILE_NAME, 
+                                PathInfo.ICON_ON, 
+                                PathInfo.ICON_OFF)
+        
+        
+        
     @staticmethod
     def change_icon(state: bool, parent_path: str, def_name: str, file_name: str, icon_on: str, icon_off:str) -> None:
         """
@@ -209,13 +226,7 @@ if __name__ == "__main__":
     Saver.opposite_saver()
     
     #change the icon
-    IconChanger.change_icon(Saver.is_enabled(), 
-                            PathInfo.XFCE_PATH, 
-                            PathInfo.DEF_FOLDER_NAME, 
-                            PathInfo.FILE_NAME, 
-                            PathInfo.ICON_ON, 
-                            PathInfo.ICON_OFF)
-    
+    IconChanger.change_icon_w_info(Saver.is_enabled(), PathInfo)
     input("Press any key")
     
      
