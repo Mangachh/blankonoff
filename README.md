@@ -51,7 +51,7 @@ Check LISCENSE.md on this repository.
 
 ## Icons Links
 
-The icons used are from (https://www.reshot.com)
+The icons used are from https://www.reshot.com
 - [Icon on](https://www.reshot.com/free-svg-icons/item/moon-RA2V5ZSDFE/)
 - [Icon off](https://www.reshot.com/free-svg-icons/item/moon-crescent-SD4ENBAV8K/)
 	
