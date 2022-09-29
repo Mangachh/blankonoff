@@ -1,7 +1,7 @@
 
 # BlankOnOff
 
-A simple plugin for the xfce4 panel that add an icon to the selected panel and when clicking it enables/disables 
+A simple plugin for the ``xfce4 panel`` that add an icon to the selected panel and when clicking it enables/disables 
 the monitor blanking. This way, if the blanking is disabled, neither the screen saver neither the lock on monitor
 woill turn on an
 
@@ -14,7 +14,7 @@ and viceversa.
 
 
 All the operations are done by the ``finalSaver.py`` script. Calls differents ``subprocess`` 
-to enable/disable via *xset s* commands.
+to enable/disable via ``xset s`` commands.
 
 The icon reflects the state of the monitor:
 - black moon: no-blanking, the screen saver won't turn on
@@ -31,7 +31,7 @@ Download the zip and decompress wherever. Then, run the script ``setup.py``. If 
 one panel a screen will show up asking for the panel to show the icon. Once chosen, the script continues
 without interaction.
 
-The **setup.py** will copy all the data to **HOME/.local/share/blankonoff** . This includes the code in the zip,
+The ``setup.py`` will copy all the data to **HOME/.local/share/blankonoff** . This includes the code in the zip,
 the icons and a ``.desktop`` file. 
 
 To remove, use the remove menu from the panel.
