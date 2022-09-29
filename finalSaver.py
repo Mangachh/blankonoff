@@ -7,7 +7,6 @@ The script prevents the screensave to start.scre
 
 
 from dataclasses import dataclass
-from genericpath import isdir
 import subprocess
 import os
 from subprocess import CompletedProcess

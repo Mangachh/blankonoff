@@ -1,0 +1,23 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=BlankOnOff TEST!!!
+Comment=Enables/Disables the screen blanking.
+Exec=/home/cobos/code/python/Saver_plugin/finalSaver.py
+Icon=/home/cobos/code/python/Saver_plugin/off.svg
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
