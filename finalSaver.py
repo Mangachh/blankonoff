@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 """ 
 A simple script to enable/disable blanking mode & expose on xfce4 desktops, 
 changes the icon on the panel launcher.
@@ -115,6 +116,8 @@ class Saver:
         xset_res = subprocess.run(xset)
         blank_res = subprocess.run(blank)
         expose_res = subprocess.run(expose)
+        # subprocess.run("xset s 0", shell=True)
+        # change in .profile
         
         
         return (xset_res, blank_res, expose_res)
@@ -188,9 +191,10 @@ class IconChanger:
                     
                                 
                 f.write(line)
-            f.close()
-            
-                
+            f.close()           
+    
+    
+        
     @staticmethod
     def search_path(parent_path: str, def_name: str, file_name: str) -> str:
         """
@@ -228,6 +232,10 @@ class IconChanger:
                              
         return ""
  
+ 
+    @staticmethod 
+    def search_path_info(info: PathInfo) -> str:
+        return IconChanger.search_path(info.PARENT_FOLDER, info.DEF_FOLDER_NAME, info.FILE_NAME)
     
 # program run
 if __name__ == "__main__":     

@@ -7,6 +7,8 @@ Version: 1.0
 
 
 
+from curses import panel
+from fileinput import filename
 import subprocess
 import os
 import shutil
@@ -22,15 +24,24 @@ from importlib_metadata import Deprecated
 PATH = "/.local/share/blankonoff/"
 HOME = os.path.expanduser("~")
 APP_NAME = "blankonoff.desktop"
+START_NAME= "blankonoff_start.desktop"
 SCRIPT_NAME = "finalSaver.py"
 ICON_NAME = "off.svg"
 # desktop file
-CONST_LINES= ["[Desktop Entry]", 
+LAUNCHER_FILE= ["[Desktop Entry]", 
               "Version=1.0", 
               "Type=Application", 
               "Name=BlankOnOff", 
               "Comment=Enables/Disables the screen blanking", 
               "Terminal=false"]
+
+START_FILE= ["[Desktop Entry]", 
+              "Version=1.0", 
+              "Type=Application", 
+              "Name=BlankOnOff Starter", 
+              "Comment=Checks the Blankonoff state and sets the screen according to it", 
+              "Terminal=false",
+              f"Exec={HOME}{PATH}start.py"]
 
 
 
@@ -175,6 +186,19 @@ def register_to_panel() -> str:
                 
     return ""
 
+
+def create_desktop_file(path: str, lines: list) -> bool:
+    
+    print(f"Creating desktop file at {path}")
+    with open(path, "w") as f:
+        try:
+            f.writelines(line + "\n" for line in lines)
+            return True
+        except Exception as e:
+            print("Oju! Something went wrong: {e}")
+            return False
+
+
 def set_launcher(id: str, source: str, destination: str, filename:str) -> bool:
     """Creates a launcher and copies it to the plugin folder in order
     to have the launcher in the panel
@@ -190,26 +214,32 @@ def set_launcher(id: str, source: str, destination: str, filename:str) -> bool:
     """
     os.makedirs(destination)
     
-    with open(f"{source}/{filename}", "w") as f:
-        try:
-            f.writelines(line + "\n" for line in CONST_LINES)
-            f.write(f"Exec={source}{SCRIPT_NAME}\n")
-            f.write(f"Icon={source}{ICON_NAME}\n")
-            f.close()
-        except Exception as e:
-            print(e)
-            return False
+    # create the destkop file
+    panel_file = LAUNCHER_FILE
+    panel_file.extend((f"Exec={source}{SCRIPT_NAME}\n",
+                       f"Icon={source}{ICON_NAME}\n"))
+    full_path = f"{source}/{filename}"
+        
+    if create_desktop_file(full_path, panel_file):    
+        # copy the desktop to ~/.config/xfce4/plugin/launcher-id
+        shutil.copy(full_path, f"{destination}/{filename}")
+        subprocess.check_output(f"xfconf-query -c xfce4-panel -p /plugins/plugin-{id}/items -t string -s {filename} -a --create", shell=True)
+        return True
     
-    # register to panel
-    #subprocess.run(f"cp {source}/{filename} {destination}/{filename}", shell=True)
-    shutil.copy(f"{source}/{filename}", f"{destination}/{filename}")
-    subprocess.check_output(f"xfconf-query -c xfce4-panel -p /plugins/plugin-{id}/items -t string -s {filename} -a --create", shell=True)
+    return False
+
     
-    # refreshes the panel
-    #subprocess.run("xfce4-panel -r", shell=True)
-    #subprocess.run("xfce4-panel", shell=True)
+def set_autostart(source:str) -> bool:
+    # they exist already
+    #os.makedirs(f"{HOME}/.config/autostart/")
+    path_start = f"{HOME}/.config/autostart/"
+   
+    if create_desktop_file(f"{source}/{START_NAME}", START_FILE):
+         shutil.copy(f"{source}/{START_NAME}", f"{path_start}/{START_NAME}")
+         return True
+     
+    return False      
     
-    return True
     
     
     
@@ -229,16 +259,19 @@ def main():
             return
          
         source = f"{HOME}{PATH}" 
-        destination = f"{HOME}/.config/xfce4/panel/launcher-{id}"
+        destination = f"{HOME}/.config/xfce4/panel/launcher-{id}"            
         set_launcher(id, source, destination, APP_NAME)
+        set_autostart(source)
+    
         
-        #arrancamos a ver
-        #subprocess.run(f"{destination}/{APP_NAME}")
+        
+        # create
 		
          
     
-if __name__ == "__main__":
+if __name__ == "__main__":    
     main()
+    
     
         
         

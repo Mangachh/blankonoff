@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Type=Application
-Name=BlankOnOff
-Comment=Enables/Disables the screen blanking
-Terminal=true
-Exec=/home/cobos/code/python/Saver_pluginfinalSaver.py
-Icon=/home/cobos/code/python/Saver_pluginoff.svg

@@ -1,0 +1,4 @@
+Vale, la cosa con el autorun: 
+- meter un launcher en la carpeta /home/.config/ que compruebe
+  el icono de la app, así, puede activar-desactivar por defecto
+  (para que esté bien). 
