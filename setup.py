@@ -7,14 +7,12 @@ Version: 1.0
 
 
 
-from curses import panel
-from fileinput import filename
 import subprocess
 import os
 import shutil
 
+from finalSaver import Saver
 
-from importlib_metadata import Deprecated
 
 # check the route of this files
 # if files are NOT in the folder, move them
@@ -27,7 +25,8 @@ APP_NAME = "blankonoff.desktop"
 START_NAME= "blankonoff_start.desktop"
 SCRIPT_NAME = "finalSaver.py"
 ICON_NAME = "off.svg"
-# desktop file
+
+# launcher desktop file
 LAUNCHER_FILE= ["[Desktop Entry]", 
               "Version=1.0", 
               "Type=Application", 
@@ -35,13 +34,17 @@ LAUNCHER_FILE= ["[Desktop Entry]",
               "Comment=Enables/Disables the screen blanking", 
               "Terminal=false"]
 
+# start file desktop file
 START_FILE= ["[Desktop Entry]", 
               "Version=1.0", 
               "Type=Application", 
               "Name=BlankOnOff Starter", 
               "Comment=Checks the Blankonoff state and sets the screen according to it", 
-              "Terminal=false",
-              f"Exec={HOME}{PATH}start.py"]
+              "Terminal=true",
+              f"Exec={HOME}{PATH}start.py",
+              f"TryExec={HOME}{PATH}start.py",
+              f"Path={HOME}{PATH}",
+              "Categories=Python;Desktop;Screensaver;Xfce4;"]
 
 
 
@@ -262,12 +265,10 @@ def main():
         destination = f"{HOME}/.config/xfce4/panel/launcher-{id}"            
         set_launcher(id, source, destination, APP_NAME)
         set_autostart(source)
-    
         
-        
-        # create
-		
-         
+        # disable on start
+        Saver.disable_blanking()
+             
     
 if __name__ == "__main__":    
     main()

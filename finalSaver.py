@@ -41,13 +41,13 @@ class Saver:
     """
     
     # TODO: maybe all this data in it's own class?
-    XSET_OFF = "xset s off".split(" ")
-    XSET_NO_BLANK = "xset s noblank".split(" ")
-    XSET_NO_EXP = "xset s noexpose".split(" ")
+    XSET_OFF = "xset s off"
+    XSET_NO_BLANK = "xset s noblank"
+    XSET_NO_EXP = "xset s noexpose"
 
-    XSET_ON = "xset s on".split(" ")
-    XSET_BLANK = "xset s blank".split(" ")
-    XSET_EXPOSE = "xset s expose".split(" ")
+    XSET_ON = "xset s on"
+    XSET_BLANK = "xset s blank"
+    XSET_EXPOSE = "xset s expose"
     
     CHECK_STATUS_CMD = "xset q | grep \"prefer blanking:\""
     # oju, it has 2 spaces
@@ -113,11 +113,10 @@ class Saver:
         Returns:
             tuple[CompletedProcess, CompletedProcess, CompletedProcess]: completed processes
         """
-        xset_res = subprocess.run(xset)
-        blank_res = subprocess.run(blank)
-        expose_res = subprocess.run(expose)
-        # subprocess.run("xset s 0", shell=True)
-        # change in .profile
+        xset_res = subprocess.run(xset, shell=True)
+        blank_res = subprocess.run(blank, shell=True)
+        expose_res = subprocess.run(expose, shell=True)
+        
         
         
         return (xset_res, blank_res, expose_res)
