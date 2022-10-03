@@ -15,6 +15,8 @@ import subprocess
 import os
 from subprocess import CompletedProcess
 
+from cairo import SubpixelOrder
+
 @dataclass
 class PathInfo:
     """Dataclass for all the path related info used in IconChanger.
@@ -44,10 +46,14 @@ class Saver:
     XSET_OFF = "xset s off"
     XSET_NO_BLANK = "xset s noblank"
     XSET_NO_EXP = "xset s noexpose"
+    XSET_NO_DPMS = "xset -dpms"
+    XPOWER_NO_PRES = "xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/presentation-mode -s false"
 
     XSET_ON = "xset s on"
     XSET_BLANK = "xset s blank"
     XSET_EXPOSE = "xset s expose"
+    XSET_DPMS = "xset +dpms"
+    XPOWER_PRES = "xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/presentation-mode -s true"
     
     CHECK_STATUS_CMD = "xset q | grep \"prefer blanking:\""
     # oju, it has 2 spaces
@@ -75,7 +81,7 @@ class Saver:
     def disable_blanking() -> None:
         """Disables he blanking on screen"""
         
-        (xset, blank, expose) = Saver.__change_saver_opt(Saver.XSET_OFF, Saver.XSET_NO_BLANK, Saver.XSET_NO_EXP)    
+        (xset, blank, expose) = Saver.__change_saver_opt(Saver.XSET_OFF, Saver.XSET_NO_BLANK, Saver.XSET_NO_EXP, Saver.XSET_NO_DPMS, Saver.XPOWER_NO_PRES)    
                
         print(f"Disabled Saver:\n{xset}\n{blank}\n{expose}")  
         
@@ -84,7 +90,7 @@ class Saver:
     def enable_blanking() -> None:
         """Enables the blanking on screen"""
         
-        (xset, blank, expose) = Saver.__change_saver_opt(Saver.XSET_ON, Saver.XSET_BLANK, Saver.XSET_EXPOSE) 
+        (xset, blank, expose) = Saver.__change_saver_opt(Saver.XSET_ON, Saver.XSET_BLANK, Saver.XSET_EXPOSE, Saver.XSET_DPMS, Saver.XPOWER_PRES) 
           
         print(f"Enabled Saver:\n{xset}\n{blank}\n{expose}")   
         
@@ -101,7 +107,7 @@ class Saver:
             Saver.enable_blanking()
         
     @staticmethod
-    def __change_saver_opt(xset: str, blank: str, expose: str) -> tuple[CompletedProcess, CompletedProcess, CompletedProcess]:
+    def __change_saver_opt(xset: str, blank: str, expose: str, dpms: str, pres_mode: str) -> tuple[CompletedProcess, CompletedProcess, CompletedProcess]:
         """
         Changes the blanking options.
 
@@ -116,7 +122,8 @@ class Saver:
         xset_res = subprocess.run(xset, shell=True)
         blank_res = subprocess.run(blank, shell=True)
         expose_res = subprocess.run(expose, shell=True)
-        
+        subprocess.run(dpms, shell=True)
+        subprocess.run(pres_mode, shell=True)
         
         
         return (xset_res, blank_res, expose_res)
@@ -187,6 +194,11 @@ class IconChanger:
                         line = f"{IconChanger.__ICON_TXT}={icon_on}\n"
                     else:
                         line = f"{IconChanger.__ICON_TXT}={icon_off}\n"
+                elif "State" in line:
+                    if state is True:
+                        line = f"State=on\n"
+                    else:
+                        line = f"State=off\n"
                     
                                 
                 f.write(line)

@@ -27,12 +27,14 @@ SCRIPT_NAME = "finalSaver.py"
 ICON_NAME = "off.svg"
 
 # launcher desktop file
+# TODO: create state
 LAUNCHER_FILE= ["[Desktop Entry]", 
               "Version=1.0", 
               "Type=Application", 
               "Name=BlankOnOff", 
               "Comment=Enables/Disables the screen blanking", 
-              "Terminal=false"]
+              "Terminal=false",
+              "State=off"]
 
 # start file desktop file
 START_FILE= ["[Desktop Entry]", 

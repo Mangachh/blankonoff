@@ -16,19 +16,21 @@ def init() -> bool:
     
     with open(f"{path}/{info.FILE_NAME}", "r") as f:
         for line in f:
-            if "Icon" in line:
-                print(f"Found icon on: {line}")
-                if "on.svg" in line:
+            if "State" in line:
+                print(f"Found state: {line}")
+                
+                if "on" in line:
                     Saver.enable_blanking()
-                    return True
-                elif "off.svg" in line:
+                else:
                     Saver.disable_blanking()
-                    return True
+                
+                return True                
                     
     return False
 
 if __name__ == "__main__":
     if init() is False:
         print("Error, file not found")
+    input("hola")
     
     
