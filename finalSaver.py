@@ -11,6 +11,7 @@ Version: 1.0
 
 
 from dataclasses import dataclass
+from faulthandler import is_enabled
 import subprocess
 import os
 from subprocess import CompletedProcess
@@ -31,7 +32,7 @@ class PathInfo:
     # TODO: create fallbacks icons
     
     ICON_ON = HOME + "/code/python/Saver_plugin/on.svg"
-    ICON_OFF = HOME + "/code/python/Saver_plugin//off.svg"
+    ICON_OFF = HOME + "/code/python/Saver_plugin/off.svg"
     
     
 
@@ -81,33 +82,34 @@ class Saver:
     def disable_blanking() -> None:
         """Disables he blanking on screen"""
         
-        (xset, blank, expose) = Saver.__change_saver_opt(Saver.XSET_OFF, Saver.XSET_NO_BLANK, Saver.XSET_NO_EXP, Saver.XSET_NO_DPMS, Saver.XPOWER_NO_PRES)    
-               
-        print(f"Disabled Saver:\n{xset}\n{blank}\n{expose}")  
+        Saver.__change_saver_opt(Saver.XSET_OFF, Saver.XSET_NO_BLANK, Saver.XSET_NO_EXP, Saver.XSET_NO_DPMS, Saver.XPOWER_PRES)                  
+         
         
         
     @staticmethod
     def enable_blanking() -> None:
         """Enables the blanking on screen"""
         
-        (xset, blank, expose) = Saver.__change_saver_opt(Saver.XSET_ON, Saver.XSET_BLANK, Saver.XSET_EXPOSE, Saver.XSET_DPMS, Saver.XPOWER_PRES) 
+        Saver.__change_saver_opt(Saver.XSET_ON, Saver.XSET_BLANK, Saver.XSET_EXPOSE, Saver.XSET_DPMS, Saver.XPOWER_NO_PRES) 
           
-        print(f"Enabled Saver:\n{xset}\n{blank}\n{expose}")   
+        
         
      
     @staticmethod
-    def opposite_saver() -> None:
+    def opposite_saver() -> bool:
         """
         If the blanking is enabled, disables it and viceversa, if the blanking is disabled, enables it.
         The method checks properly if is enabled, so it doesn't need an argument.
         """
         if Saver.is_enabled():
             Saver.disable_blanking()
+            return False
         else:
             Saver.enable_blanking()
+            return True
         
     @staticmethod
-    def __change_saver_opt(xset: str, blank: str, expose: str, dpms: str, pres_mode: str) -> tuple[CompletedProcess, CompletedProcess, CompletedProcess]:
+    def __change_saver_opt(xset: str, blank: str, expose: str, dpms: str, pres_mode: str) -> None:
         """
         Changes the blanking options.
 
@@ -119,14 +121,15 @@ class Saver:
         Returns:
             tuple[CompletedProcess, CompletedProcess, CompletedProcess]: completed processes
         """
+        dpms_res = subprocess.run(dpms, shell=True)
+        pres_res = subprocess.run(pres_mode, shell=True)
+        
         xset_res = subprocess.run(xset, shell=True)
         blank_res = subprocess.run(blank, shell=True)
-        expose_res = subprocess.run(expose, shell=True)
-        subprocess.run(dpms, shell=True)
-        subprocess.run(pres_mode, shell=True)
+        expose_res = subprocess.run(expose, shell=True)       
         
-        
-        return (xset_res, blank_res, expose_res)
+        print("Printing respones...")
+        print(f"{dpms_res}\n{pres_res}\n{xset_res}\n{blank_res}\n{expose_res}")
     
  
    
@@ -179,30 +182,38 @@ class IconChanger:
             return
         
         path = f"{folder}/{file_name}"
-        print(path)
         
         # read lines
         with open(path, "r") as f:
            lines = f.readlines()
             
         # write lines
+        print("Reading file...")
+        icon_p : str
+        state_p : str
         with open(path, "r+") as f:
             
-            for line in lines:
+            for line in lines:              
                 if IconChanger.__ICON_TXT in line:
-                    if state is True:
-                        line = f"{IconChanger.__ICON_TXT}={icon_on}\n"
+                    if state is True:   
+                        icon_p = f"{IconChanger.__ICON_TXT}={icon_on}"                         
                     else:
-                        line = f"{IconChanger.__ICON_TXT}={icon_off}\n"
+                        icon_p = f"{IconChanger.__ICON_TXT}={icon_off}"    
+                        
+                    line = icon_p
+                    print(f"Icon line found. Writing: {icon_p}")           
                 elif "State" in line:
                     if state is True:
-                        line = f"State=on\n"
+                        state_p = f"State=on\n"
                     else:
-                        line = f"State=off\n"
+                        state_p = f"State=off\n"
                     
+                    line = state_p
+                    print(f"State line found. Writing: {state_p}")
                                 
                 f.write(line)
-            f.close()           
+        
+        print("File writed...")        
     
     
         
@@ -250,11 +261,11 @@ class IconChanger:
     
 # program run
 if __name__ == "__main__":     
-    # change the saver
-    Saver.opposite_saver()
+    
+    is_enabled = Saver.opposite_saver()
     
     #change the icon
-    IconChanger.change_icon_w_info(Saver.is_enabled(), PathInfo)
+    IconChanger.change_icon_w_info(is_enabled, PathInfo)
     input("Press any key")
     
      
