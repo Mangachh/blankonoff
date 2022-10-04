@@ -29,10 +29,9 @@ class PathInfo:
     DEF_FOLDER_NAME = "launcher"
     FILE_NAME = "blankonoff.desktop"
     
-    # TODO: create fallbacks icons
-    
-    ICON_ON = HOME + "/code/python/Saver_plugin/on.svg"
-    ICON_OFF = HOME + "/code/python/Saver_plugin/off.svg"
+    # TODO: create fallbacks icons    
+    ICON_ON = f"{HOME}/.local/share/blankonoff/on.svg"
+    ICON_OFF = f"{HOME}/.local/share/blankonoff/off.svg"
     
     
 
