@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <title>MOON</title>
-  <path d="M77.849,82.92a32.765,32.765,0,0,1-17.59-60.411,41.663,41.663,0,1,0,45.232,45.232A32.736,32.736,0,0,1,77.849,82.92Z" fill="#ffc82c"/>
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
+ <title>MOON</title>
+
+ <g>
+  <title>Layer 1</title>
+  <path d="m84.55211,91.58444a48.18266,47.84004 0 0 1 -25.86702,-88.20585a61.26763,60.83197 0 1 0 66.51604,66.04305a48.14001,47.7977 0 0 1 -40.64902,22.16279z" fill="#eaea27" id="svg_1"/>
+  <ellipse ry="0.14493" rx="0.14493" id="svg_2" cy="67.44915" cx="47.04351" stroke="#000" fill="#fff"/>
+ </g>
 </svg>

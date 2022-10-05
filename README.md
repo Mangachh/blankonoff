@@ -1,28 +1,32 @@
 
 # BlankOnOff
 
-A simple plugin for the ``xfce4 panel`` that add an icon to the selected panel and when clicking it enables/disables 
-the monitor blanking. This way, if the blanking is disabled, neither the screen saver neither the lock on monitor
-woill turn on an
+A simple plugin for the ``xfce4 panel`` that add's an icon to the selected panel and when clicking it enables/disables 
+the monitor blanking and computer suspension. This way, if the blanking is disabled, neither the screen saver neither the lock on monitor
+will turn on. 
+It's perfect for working, watching some Youtube videos or needing the desktop fully ON regardless not inserting input.
 
 
-## How it works
+## How to use it & how it works
 
-Click on the panel launcher to set on/off the screen blinking. When clicking checks the
+Click on the panel launcher icon to set on/off the screen blinking. When clicking checks the
 current state of the monitor blinking and reverse it. So, if it's enable, then disables it
 and viceversa.
 
 
-All the operations are done by the ``finalSaver.py`` script. Calls differents ``subprocess`` 
-to enable/disable via ``xset s`` commands.
+All the operations are done by the ``finalSaver.py`` script that calls differents ``subprocess`` 
+to enable/disable the settings via ``xset s`` commands and ``xfconf-query``
 
 The icon reflects the state of the monitor:
-- black moon: no-blanking, the screen saver won't turn on
-- yellow moon: blanking, the screen saver will turn on if activated
+- black moon: no-blanking, the screen saver won't turn on and the computer won't go to slee modep.
+- yellow moon: blanking, the screen saver will turn on if activated and computer will go to sleep mode.
 
 The script doesn't care if the screen saver is enabled or not, neither it's existence. 
 It uses ``xset s`` commands to be compatible with every xfce4 desktopt regardless the screensaver 
 app.
+
+In addition, it turns on/off the ``Presentation Mode`` in the Power Management to disable
+it's settings. This way the computer won't turn off, go to sleep mode and so on.
 
 
 ## Installation
@@ -55,8 +59,8 @@ Check LISCENSE.md on this repository.
 ## Icons Links
 
 The icons used are from https://www.reshot.com
-- On Icon: https://www.reshot.com/free-svg-icons/item/moon-RA2V5ZSDFE/
-- Off Icon: https://www.reshot.com/free-svg-icons/item/moon-crescent-SD4ENBAV8K/
+- On Icon: Sligtly modified to be bigger. This is the base of the off icon too.  https://www.reshot.com/free-svg-icons/item/moon-RA2V5ZSDFE/
+- Original Off Icon: https://www.reshot.com/free-svg-icons/item/moon-crescent-SD4ENBAV8K/
 	
 
 [License](https://www.reshot.com/license/) for the icons.
