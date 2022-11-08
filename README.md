@@ -46,7 +46,7 @@ To remove, use the remove menu from the panel.
  - The "xset s XX" shares the state between sessions. There is a launcher on ``$HOME/.config/autostart`` that calls
  ``start.py ``, checks the state and enables/disables the blanking, saving, etc. For some reason, the launcher located
  in ``$HOME/.config/autostart`` should have the ``Console=true`` property to work properly. I don't really know why,
- but I guess there's something with the ``subprocess.run()`` that doesn't run on autostart.
+ but I guess there's something to do with the ``subprocess.run()``.
 
 
 ## Liscense:
