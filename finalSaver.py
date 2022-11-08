@@ -192,6 +192,8 @@ class IconChanger:
         state_p : str
         with open(path, "r+") as f:
             
+            #TODO: rigth now, the loop supose that the "state" is above the "icon path",
+            # maybe we can make mod this to use a dictionary or something
             for line in lines:              
                 if IconChanger.__ICON_TXT in line:
                     if state is True:   
