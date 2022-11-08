@@ -195,9 +195,9 @@ class IconChanger:
             for line in lines:              
                 if IconChanger.__ICON_TXT in line:
                     if state is True:   
-                        icon_p = f"{IconChanger.__ICON_TXT}={icon_on}"                         
+                        icon_p = f"{IconChanger.__ICON_TXT}={icon_on}\n"                         
                     else:
-                        icon_p = f"{IconChanger.__ICON_TXT}={icon_off}"    
+                        icon_p = f"{IconChanger.__ICON_TXT}={icon_off}\n"    
                         
                     line = icon_p
                     print(f"Icon line found. Writing: {icon_p}")           
