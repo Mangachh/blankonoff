@@ -127,7 +127,7 @@ class Saver:
         blank_res = subprocess.run(blank, shell=True)
         expose_res = subprocess.run(expose, shell=True)       
         
-        print("Printing respones...")
+        print("Printing responses...")
         print(f"{dpms_res}\n{pres_res}\n{xset_res}\n{blank_res}\n{expose_res}")
     
  

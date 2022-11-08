@@ -59,8 +59,8 @@ Check LISCENSE.md on this repository.
 ## Icons Links
 
 The icons used are from https://www.reshot.com
-- On Icon: Sligtly modified to be bigger. This is the base of the off icon too.  https://www.reshot.com/free-svg-icons/item/moon-RA2V5ZSDFE/
-- Original Off Icon: https://www.reshot.com/free-svg-icons/item/moon-crescent-SD4ENBAV8K/
+- On Icon: Sligtly modified to be bigger. This is the base of the off icon too (v.1.1)  https://www.reshot.com/free-svg-icons/item/moon-RA2V5ZSDFE/
+- Original Off Icon (v.1.0): https://www.reshot.com/free-svg-icons/item/moon-crescent-SD4ENBAV8K/
 	
 
 [License](https://www.reshot.com/license/) for the icons.

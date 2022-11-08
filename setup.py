@@ -50,7 +50,7 @@ START_FILE= ["[Desktop Entry]",
 
 
 
-def get_installation_paths() -> tuple[str, str]:
+def get_installation_paths() -> (str, str):
     """
     Gets the paths where the file is and the destination as 
     HOME+PATH
@@ -217,7 +217,7 @@ def set_launcher(id: str, source: str, destination: str, filename:str) -> bool:
     Returns:
         bool: _description_
     """
-    os.makedirs(destination)
+    os.makedirs(destination, exist_ok=True)
     
     # create the destkop file
     panel_file = LAUNCHER_FILE
@@ -234,13 +234,22 @@ def set_launcher(id: str, source: str, destination: str, filename:str) -> bool:
     return False
 
     
-def set_autostart(source:str) -> bool:
-    # they exist already
-    #os.makedirs(f"{HOME}/.config/autostart/")
+def set_autostart(home:str) -> bool:
+    """
+    Sets the autostart folder and creates the launcher to work properly.
+    It uses /$HOME/.config/autostart/
+
+    Args:
+        source (str): the home directory
+
+    Returns:
+        bool: is the autostart correctly installed?
+    """
+    os.makedirs(f"{HOME}/.config/autostart/", exist_ok=True)
     path_start = f"{HOME}/.config/autostart/"
    
-    if create_desktop_file(f"{source}/{START_NAME}", START_FILE):
-         shutil.copy(f"{source}/{START_NAME}", f"{path_start}/{START_NAME}")
+    if create_desktop_file(f"{home}/{START_NAME}", START_FILE):
+         shutil.copy(f"{home}/{START_NAME}", f"{path_start}/{START_NAME}")
          return True
      
     return False      
@@ -263,10 +272,12 @@ def main():
         if id == "":
             return
          
-        source = f"{HOME}{PATH}" 
+        del(source)
+        
+        home = f"{HOME}{PATH}" 
         destination = f"{HOME}/.config/xfce4/panel/launcher-{id}"            
-        set_launcher(id, source, destination, APP_NAME)
-        set_autostart(source)
+        set_launcher(id, home, destination, APP_NAME)
+        set_autostart(home)
         
         # disable on start
         Saver.disable_blanking()
