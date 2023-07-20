@@ -6,7 +6,7 @@ changes the icon on the panel launcher.
 The script prevents the screensave to start.
 
 Author: Mangachh
-Version: 1.0
+Version: 1.5
 """
 
 
@@ -42,7 +42,8 @@ class Saver:
     All the methods are static
     """
     
-    # Old versios of xfce doesn't use the query for the power management
+    # Some version of xfce doesn't use the query for the power management
+    # (like you, Mint xfce)
     # so, in order to mantain some compatibility, the app uses the xset properties
     XSET_OFF = "xset s off"
     XSET_NO_BLANK = "xset s noblank"
