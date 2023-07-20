@@ -26,15 +26,12 @@ def init() -> bool:
     
     with open(f"{path}/{info.FILE_NAME}", "r") as f:
         for line in f:
-            if "State" in line:
-                print(f"Found state: {line}")
-                
-                if "on" in line:
-                    Saver.enable_blanking()
-                else:
-                    Saver.disable_blanking()
-                
-                return True                
+            if PathInfo.ICON_ON in line:
+                Saver.enable_blanking()
+                return True 
+            elif PathInfo.ICON_OFF in line:
+                Saver.disable_blanking()
+                return True                        
                     
     return False
 
