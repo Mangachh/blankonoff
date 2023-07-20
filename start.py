@@ -1,5 +1,15 @@
 #!/usr/bin/python3
 
+"""
+Autostart script. This scripts launches everytime the os 
+starts. I got some issues with the app not savind the 
+state, so based on the launcher icon, it will update the 
+screensaver and the blinking of the os.
+
+Author: Mangachh
+Version: 1.5
+"""
+
 from finalSaver import Saver
 from finalSaver import IconChanger
 from finalSaver import PathInfo

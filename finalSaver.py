@@ -42,7 +42,8 @@ class Saver:
     All the methods are static
     """
     
-    # TODO: maybe all this data in it's own class?
+    # Old versios of xfce doesn't use the query for the power management
+    # so, in order to mantain some compatibility, the app uses the xset properties
     XSET_OFF = "xset s off"
     XSET_NO_BLANK = "xset s noblank"
     XSET_NO_EXP = "xset s noexpose"
@@ -53,6 +54,8 @@ class Saver:
     XSET_BLANK = "xset s blank"
     XSET_EXPOSE = "xset s expose"
     XSET_DPMS = "xset +dpms"
+    
+    # I think i can use only this setting...
     XPOWER_PRES = "xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/presentation-mode -s true"
     
     CHECK_STATUS_CMD = "xset q | grep \"prefer blanking:\""

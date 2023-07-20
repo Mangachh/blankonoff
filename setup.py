@@ -2,7 +2,7 @@
 Setup module of the BlankOnOff app
 
 Author: Mangachh
-Version: 1.0
+Version: 1.5
 """
 
 
@@ -27,14 +27,12 @@ SCRIPT_NAME = "finalSaver.py"
 ICON_NAME = "off.svg"
 
 # launcher desktop file
-# TODO: create state
 LAUNCHER_FILE= ["[Desktop Entry]", 
               "Version=1.0", 
               "Type=Application", 
               "Name=BlankOnOff", 
               "Comment=Enables/Disables the screen blanking", 
-              "Terminal=false",
-              "State=off"]
+              "Terminal=false"]
 
 # start file desktop file
 START_FILE= ["[Desktop Entry]", 
@@ -42,7 +40,7 @@ START_FILE= ["[Desktop Entry]",
               "Type=Application", 
               "Name=BlankOnOff Starter", 
               "Comment=Checks the Blankonoff state and sets the screen according to it", 
-              "Terminal=true",
+              "Terminal=false",
               f"Exec={HOME}{PATH}start.py",
               f"TryExec={HOME}{PATH}start.py",
               f"Path={HOME}{PATH}",
@@ -97,11 +95,7 @@ def create_installation_directory(source: str, destination: str) -> bool:
                 print(f"Succefully created directory at: {destination}")
         else:
             print("Directory already exists.")
-        
-        #move files
-        #return move_files(source, destination)
-        
-    
+            
     return True           
     
 
