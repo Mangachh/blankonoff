@@ -72,10 +72,12 @@ class Saver:
         
         print(f"Holaaaa {str(res)}")        
         
-        if str(res).find(Saver.BLANKING_ON) != -1:
-            return True
-        else:
-            return False      
+        return str(res).find(Saver.BLANKING_ON) != -1
+        
+        # if str(res).find(Saver.BLANKING_ON) != -1:
+        #     return True
+        # else:
+        #     return False      
             
     @staticmethod
     def disable_blanking() -> None:
@@ -118,7 +120,7 @@ class Saver:
             expose (str): sxet s expose CMD order 
 
         Returns:
-            tuple[CompletedProcess, CompletedProcess, CompletedProcess]: completed processes
+            None
         """
         dpms_res = subprocess.run(dpms, shell=True)
         pres_res = subprocess.run(pres_mode, shell=True)
@@ -189,11 +191,9 @@ class IconChanger:
         # write lines
         print("Reading file...")
         icon_p : str
-        state_p : str
         with open(path, "r+") as f:
             
-            #TODO: rigth now, the loop supose that the "state" is above the "icon path",
-            # maybe we can make mod this to use a dictionary or something
+            # Rewrites the launcher file, change the icon
             for line in lines:              
                 if IconChanger.__ICON_TXT in line:
                     if state is True:   
@@ -202,15 +202,7 @@ class IconChanger:
                         icon_p = f"{IconChanger.__ICON_TXT}={icon_off}\n"    
                         
                     line = icon_p
-                    print(f"Icon line found. Writing: {icon_p}")           
-                elif "State" in line:
-                    if state is True:
-                        state_p = f"State=on\n"
-                    else:
-                        state_p = f"State=off\n"
-                    
-                    line = state_p
-                    print(f"State line found. Writing: {state_p}")
+                    print(f"Icon line found. Writing: {icon_p}")
                                 
                 f.write(line)
         
