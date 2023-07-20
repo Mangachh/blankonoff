@@ -5,11 +5,12 @@ A simple plugin for the ``xfce4 panel`` that add's an icon to the selected panel
 the monitor blanking and computer suspension. This way, if the blanking is disabled, neither the screen saver neither the lock on monitor
 will turn on. 
 It's perfect for working, watching some Youtube videos or needing the desktop fully ON regardless not inserting input.
+Tested with Xubuntu 18, 20, 22 and Mint xfce 21.
 
 
 ## How to use it & how it works
 
-Click on the panel launcher icon to set on/off the screen blinking. When clicking checks the
+Click on the panel launcher icon to set on/off the screen blinking. When clicking, the app checks the
 current state of the monitor blinking and reverse it. So, if it's enable, then disables it
 and viceversa.
 
@@ -23,10 +24,10 @@ The icon reflects the state of the monitor:
 
 The script doesn't care if the screen saver is enabled or not, neither it's existence. 
 It uses ``xset s`` commands to be compatible with every xfce4 desktopt regardless the screensaver 
-app.
+app or the version of ``xfce``.
 
-In addition, it turns on/off the ``Presentation Mode`` in the Power Management to disable
-it's settings. This way the computer won't turn off, go to sleep mode and so on.
+In addition, it turns on/off the ``Presentation Mode``, if exists, in the Power Management to disable
+it's settings. This way the computer won't turn off, go to sleep mode and so on. If the query doesn't exist (for example in Mint xfce 21), prints an error if console is activated.
 
 
 ## Installation
@@ -43,7 +44,7 @@ To remove, use the remove menu from the panel.
 
 ## Known issues:
 
- - The "xset s XX" shares the state between sessions. There is a launcher on ``$HOME/.config/autostart`` that calls
+ - The "xset s XX" does not share the state between sessions. There is a launcher on ``$HOME/.config/autostart`` that calls
  ``start.py ``, checks the state and enables/disables the blanking, saving, etc. For some reason, the launcher located
  in ``$HOME/.config/autostart`` should have the ``Console=true`` property to work properly. I don't really know why,
  but I guess there's something to do with the ``subprocess.run()``.

@@ -41,6 +41,6 @@ def init() -> bool:
 if __name__ == "__main__":
     if init() is False:
         print("Error, file not found")
-    input("hola")
+    # input("hola")
     
     
