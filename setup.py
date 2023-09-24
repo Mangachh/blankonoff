@@ -140,10 +140,13 @@ def move_files(source: str, destination: str) -> bool:
 CMD_ADD_LAUNCHER = "xfce4-panel --add=launcher"
 CMD_GET_PANELS = "xfconf-query -c xfce4-panel -p /panels"
 CMD_GET_IDS = "xfconf-query -c xfce4-panel -p /panels/%s/plugin-ids"
-CMD_GET_TYPE = "xfconf-query -c xfce4-panel -p /plugins/plugin-%s"
+CMD_GET_TYPE = "xfconf-query -c xfce4-panel -p /plugins/plugin-%s" # change name
+CMD_ADD_PLUGIN = "xfconf-query -c xfce4-panel -p /plugins/plugin-%s --create -t string -s launcher"
+CMD_ADD_PLUGIN_DATA = "xfconf-query -c xfce4-panel -p /plugins/plugin-%s/blankonoff --create -t string -s 1.7"
+                    
 CMD_GET_ITEMS = "xfconf-query -c xfce4-panel -p /plugins/plugin-%s/items "
-CMD_ADD_IDS = "xfconf-query -c xfce4-panel -p /panels/%s/plugin-ids %s"
-CMD_ADD_ID_ARGS = "-t %t -s %s"
+CMD_ADD_IDS = "xfconf-query -c xfce4-panel -p /panels/%s/plugin-ids %s -a"
+CMD_ADD_ID_ARGS = "-t int -s %s"
 
 
 def register_to_panel() -> str:
@@ -160,27 +163,28 @@ def register_to_panel() -> str:
       # * get all the id's for each panel - done
       # * add launcher
         # there are 2 ways: with xpannel add launcher or by hand - try this
-        # * get the new id
-        # * put the id in the array
+        # * get the new id - done
+        # * put the id in the array - done
         # * get the launcher in the folder
         # * put the launcher in the plugin id
         
     print("Getting panels")
     resp = subprocess.check_output(CMD_GET_PANELS, shell=True).decode("UTF-8").splitlines()
-    nums = [i for i in resp if i.isdigit()]
-    print("Panel id's:", nums)
+    panel_ids = [i for i in resp if i.isdigit()]
+    print("Panel id's:", panel_ids)
 
     to_add_id : str
-    panel_to_add = f"panel-{nums[0]}"
+    panel_to_add = f"panel-{panel_ids[0]}"
     
     # method
-    if len(nums) > 1:        
+    # get the panel where to put
+    if len(panel_ids) > 1:        
         print("Choose the panel where to put the launcher:")
         in_app = True
         to_add_id : str
         while in_app:   
             index = 0         
-            for i in nums:                
+            for i in panel_ids:                
                 print(f"{index} - panel-{i}")   
                 index += 1        
             try:                
@@ -189,41 +193,57 @@ def register_to_panel() -> str:
                 print("Only numbers allowed")
                 continue
             
-            if to_add_id < 0 or to_add_id >= len(nums) :
+            if to_add_id < 0 or to_add_id >= len(panel_ids) :
                 print("Incorrect panel. Write the number of the panel")
             else:    
                 in_app = False
-                panel_to_add = f"panel-{nums[to_add_id]}"
+                panel_to_add = f"panel-{panel_ids[to_add_id]}"
                 
     # get the ids 
     # method
     print(f"Panel to add launcher selected: {panel_to_add}")
-    panel_ids = dict()
-    for num in nums:
-        panel = f"panel-{num}"
+    plugins_by_panel = dict()
+    for panel in panel_ids:
+        panel_name = f"panel-{panel}"
         try:
-            resp = subprocess.check_output(CMD_GET_IDS % panel, shell=True, text=False).decode("UTF-8").splitlines()
+            resp = subprocess.check_output(CMD_GET_IDS % panel_name, shell=True).decode("UTF-8").splitlines()
+            print(f"Raw Id's for {panel_name}: {resp}")
         except Exception as e:
             print(e)
             continue
             
         ids = [i for i in resp if i.isdigit()]
         # print(ids)
-        panel_ids[panel] = ids
-        print(f"Id's from {panel}: {panel_ids[panel]}")
+        plugins_by_panel[panel_name] = ids
+        print(f"Id's from {panel_name}: {plugins_by_panel[panel_name]}")
     
     launcher_id : int
     try:  
-        launcher_id = int(max(panel_ids.values())[0]) + 1
-    except:
+        print(f"values: {plugins_by_panel.values}")
+        launcher_id = int(max(plugins_by_panel.values())[0]) + 1
+        print(f"Launcher id: {launcher_id}")
+    except Exception as e:
+        print(e)
         # in case there's no value
         launcher_id = 0 
     
     print(f"Found launcher id: {launcher_id}")
     
     # add the array
-    # add the property to the panel     
-    return ""
+    ids_string = " ".join([CMD_ADD_ID_ARGS % i for i in plugins_by_panel[panel_to_add]])
+    # add the new id
+    ids_string += " " + CMD_ADD_ID_ARGS % launcher_id
+    print(f"Args: {ids_string}")
+    output = subprocess.check_output(CMD_ADD_IDS % (panel_to_add, ids_string), shell=True).decode("UTF-8")
+    print(output)
+    
+    output = subprocess.check_output(CMD_ADD_PLUGIN % (launcher_id), shell=True).decode("UTF-8")
+    output = subprocess.check_output(CMD_ADD_PLUGIN_DATA % (launcher_id), shell=True).decode("UTF-8")
+    print(output)
+    # add the property to the panel    
+    subprocess.check_output("xfce4-panel -r", shell=True)
+     
+    return launcher_id
     print("Adding launcher to panel")
     resp = subprocess.run(CMD_ADD_LAUNCHER, shell=True)   
     
@@ -237,7 +257,7 @@ def register_to_panel() -> str:
     
     # for each panel, look all the plugins that are launcher
     for panel in panel_ids:
-        num = str(panel);
+        panel = str(panel);
         
         raw_ids = subprocess.check_output(CMD_GET_IDS % 0, shell=True).decode("UTF-8")
         plugins = [i for i in raw_ids.splitlines() if i.isdigit()]
