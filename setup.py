@@ -148,60 +148,31 @@ CMD_GET_ITEMS = "xfconf-query -c xfce4-panel -p /plugins/plugin-%s/items "
 CMD_ADD_IDS = "xfconf-query -c xfce4-panel -p /panels/%s/plugin-ids %s -a"
 CMD_ADD_ID_ARGS = "-t int -s %s"
 
-
-def register_to_panel() -> str:
-    """Registers the plugin to xfce4-panel
-
-    Returns:
-        str: id of the plugin
-    """
-    
-    # desired order
-      # * get all the panels - done      
-      # * ¿¿¿ check if the plugin is already installed ??? if it's installed remove?
-      # * ask for panel to add - done
-      # * get all the id's for each panel - done
-      # * add launcher
-        # there are 2 ways: with xpannel add launcher or by hand - try this
-        # * get the new id - done
-        # * put the id in the array - done
-        # * get the launcher in the folder
-        # * put the launcher in the plugin id
-        
-    print("Getting panels")
-    resp = subprocess.check_output(CMD_GET_PANELS, shell=True).decode("UTF-8").splitlines()
-    panel_ids = [i for i in resp if i.isdigit()]
-    print("Panel id's:", panel_ids)
-
+def get_panel_id_to_register(panel_ids: list) -> str:
+    print("Choose the panel where to put the launcher:")
+    in_app = True
     to_add_id : str
-    panel_to_add = f"panel-{panel_ids[0]}"
+    while in_app:   
+        index = 0         
+        for i in panel_ids:                
+            print(f"{index} - panel-{i}")   
+            index += 1        
+        try:                
+            to_add_id = int(input(">>"))
+        except:
+            print("Only numbers allowed")
+            continue
+        
+        if to_add_id < 0 or to_add_id >= len(panel_ids) :
+            print("Incorrect panel. Write the number of the panel")
+        else:    
+            in_app = False
+            panel_to_add = f"panel-{panel_ids[to_add_id]}"
     
-    # method
-    # get the panel where to put
-    if len(panel_ids) > 1:        
-        print("Choose the panel where to put the launcher:")
-        in_app = True
-        to_add_id : str
-        while in_app:   
-            index = 0         
-            for i in panel_ids:                
-                print(f"{index} - panel-{i}")   
-                index += 1        
-            try:                
-                to_add_id = int(input(">>"))
-            except:
-                print("Only numbers allowed")
-                continue
-            
-            if to_add_id < 0 or to_add_id >= len(panel_ids) :
-                print("Incorrect panel. Write the number of the panel")
-            else:    
-                in_app = False
-                panel_to_add = f"panel-{panel_ids[to_add_id]}"
-                
-    # get the ids 
-    # method
-    print(f"Panel to add launcher selected: {panel_to_add}")
+    return panel_to_add
+
+
+def get_plugins_by_panel(panel_ids : list) -> dict:
     plugins_by_panel = dict()
     for panel in panel_ids:
         panel_name = f"panel-{panel}"
@@ -217,6 +188,9 @@ def register_to_panel() -> str:
         plugins_by_panel[panel_name] = ids
         print(f"Id's from {panel_name}: {plugins_by_panel[panel_name]}")
     
+    return plugins_by_panel
+
+def get_next_plugin_id(plugins_by_panel: dict) -> int:
     launcher_id : int
     try:  
         print(f"values: {plugins_by_panel.values}")
@@ -227,14 +201,39 @@ def register_to_panel() -> str:
         # in case there's no value
         launcher_id = 0 
     
+    return launcher_id
+    
+    
+def register_to_panel() -> str:
+    """Registers the plugin to xfce4-panel
+
+    Returns:
+        str: id of the plugin
+    """
+        
+    print("Getting panels")
+    resp = subprocess.check_output(CMD_GET_PANELS, shell=True).decode("UTF-8").splitlines()
+    panel_ids = [i for i in resp if i.isdigit()]
+    print("Panel id's:", panel_ids)
+
+    panel_id : str
+    # get the panel where to put
+    if len(panel_ids) > 1:        
+        panel_id = get_panel_id_to_register(panel_ids)
+                
+    # get the ids by panel
+    print(f"Panel to add launcher selected: {panel_id}")
+    plugins_by_panel = get_plugins_by_panel(panel_ids)        
+    launcher_id = get_next_plugin_id(plugins_by_panel)   
     print(f"Found launcher id: {launcher_id}")
     
     # add the array
-    ids_string = " ".join([CMD_ADD_ID_ARGS % i for i in plugins_by_panel[panel_to_add]])
+    ids_string = " ".join([CMD_ADD_ID_ARGS % i for i in plugins_by_panel[panel_id]])
+    
     # add the new id
     ids_string += " " + CMD_ADD_ID_ARGS % launcher_id
     print(f"Args: {ids_string}")
-    output = subprocess.check_output(CMD_ADD_IDS % (panel_to_add, ids_string), shell=True).decode("UTF-8")
+    output = subprocess.check_output(CMD_ADD_IDS % (panel_id, ids_string), shell=True).decode("UTF-8")
     print(output)
     
     output = subprocess.check_output(CMD_ADD_PLUGIN % (launcher_id), shell=True).decode("UTF-8")
@@ -243,40 +242,7 @@ def register_to_panel() -> str:
     # add the property to the panel    
     subprocess.check_output("xfce4-panel -r", shell=True)
      
-    return launcher_id
-    print("Adding launcher to panel")
-    resp = subprocess.run(CMD_ADD_LAUNCHER, shell=True)   
-    
-    # get all the plugins id
-    raw_ids= subprocess.check_output(CMD_GET_PANELS, shell=True).decode("UTF-8")
-    print(raw_ids)
-    panel_ids = [line for line in raw_ids.splitlines() if line.isdigit()]            
-    
-    print(panel_ids)
-    final_id = ""
-    
-    # for each panel, look all the plugins that are launcher
-    for panel in panel_ids:
-        panel = str(panel);
-        
-        raw_ids = subprocess.check_output(CMD_GET_IDS % 0, shell=True).decode("UTF-8")
-        plugins = [i for i in raw_ids.splitlines() if i.isdigit()]
-        
-        for id in plugins:
-            resp = subprocess.check_output(CMD_GET_TYPE % str(id), shell=True)
-            
-            print(resp)
-            
-            if b"launcher" in resp:
-                print(f"Found launcher at {id}")
-                # llamamos a ver si tiene items
-                resp_it = subprocess.run(CMD_GET_ITEMS % str(id), shell=True)
-                
-                if resp_it.returncode == 1:
-                    print("Found id for new launcher")
-                    return id
-                
-    return ""
+    return launcher_id    
 
 
 def create_desktop_file(path: str, lines: list) -> bool:
